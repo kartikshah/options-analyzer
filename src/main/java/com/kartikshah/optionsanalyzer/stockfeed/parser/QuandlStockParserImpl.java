@@ -1,4 +1,4 @@
-package com.kartikshah.optionsanalyzer.quandl;
+package com.kartikshah.optionsanalyzer.stockfeed.parser;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
@@ -14,13 +14,13 @@ import java.time.LocalDate;
  * Created by kartik on 10/22/15.
  */
 @Component
-public class QuandlStockParserImpl implements QuandlStockParser
+public class QuandlStockParserImpl implements StockParser
 {
 
     @Override
     public TickerDto parse(String jsonString)
     {
-        TickerDto tickerDataDto = new TickerDto();
+        TickerDto tickerDto = new TickerDto();
         try
         {
             JsonFactory jsonFactory = new JsonFactory();
@@ -43,7 +43,8 @@ public class QuandlStockParserImpl implements QuandlStockParser
                         if (!JsonToken.START_ARRAY.equals(token)) break;
 
                         token = jsonParser.nextToken();
-                        dataDto.setDate(LocalDate.parse(jsonParser.getText()));
+                        LocalDate date = LocalDate.parse(jsonParser.getText());
+                        dataDto.setDate(date);
 
                         token = jsonParser.nextToken();
                         dataDto.setOpen(Double.parseDouble(jsonParser.getText()));
@@ -58,7 +59,7 @@ public class QuandlStockParserImpl implements QuandlStockParser
                         dataDto.setClose(Double.parseDouble(jsonParser.getText()));
 
                         token = jsonParser.nextToken(); //END_ARRAY
-                        tickerDataDto.addData(dataDto);
+                        tickerDto.addData(date, dataDto);
 
                     }
                 }
@@ -67,6 +68,6 @@ public class QuandlStockParserImpl implements QuandlStockParser
         {
             e.printStackTrace();
         }
-        return tickerDataDto;
+        return tickerDto;
     }
 }

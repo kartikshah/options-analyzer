@@ -3,9 +3,12 @@ package com.kartikshah.optionsanalyzer.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -19,11 +22,11 @@ public class TickerDto
     private String symbol;
     private String name;
     private LocalDateTime lastUpdated;
-    private List<TickerDataDto> data;
+    private Map<LocalDate, TickerDataDto> data;
 
     public TickerDto()
     {
-        this.data = new ArrayList<TickerDataDto>();
+        this.data = new HashMap<>();
     }
 
     public TickerDto(String symbol, String name)
@@ -76,17 +79,17 @@ public class TickerDto
         this.lastUpdated = lastUpdated;
     }
 
-    public List<TickerDataDto> getData()
+    public Map<LocalDate, TickerDataDto> getData()
     {
         return data;
     }
 
-    public void setData(List<TickerDataDto> data)
+    public void setData(Map<LocalDate, TickerDataDto> data)
     {
         this.data = data;
     }
 
-    public void addData(TickerDataDto dataDto) {this.data.add(dataDto);}
+    public void addData(LocalDate date, TickerDataDto dataDto) {this.data.put(date, dataDto);}
 
     public Long getTickerKey()
     {
@@ -98,8 +101,5 @@ public class TickerDto
         this.tickerKey = tickerKey;
     }
 
-    public String toDataJsonString(){
-        String dataString = data.stream().map(d -> d.toJsonString()).collect(Collectors.joining(", "));
-        return "[ " + dataString + " ]";
-    }
+
 }
